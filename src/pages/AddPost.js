@@ -23,7 +23,7 @@ const containerVariants = {
   },
   visible: { 
     opacity: 1, 
-    transition: { delay: 1.5, duration: 1.5 },
+    transition: { delay: 0.5, duration: 1.5 },
     x:0
   },
   hide: { 
@@ -32,7 +32,7 @@ const containerVariants = {
   },
   show: { 
     opacity: 1, 
-    transition: { delay: 1.5, duration: 1.5 },
+    transition: { delay: 0.5, duration: 1.5 },
     x:0
   },
   down: { 
@@ -41,7 +41,7 @@ const containerVariants = {
   },
   up: { 
     opacity: 1, 
-    transition: { delay: 1.5, duration: 1.5 },
+    transition: { delay: 0.5, duration: 1.5 },
     y:0
   },
   high: { 
@@ -50,7 +50,7 @@ const containerVariants = {
   },
   low: { 
     opacity: 1, 
-    transition: { delay: 1.5, duration: 1.5 },
+    transition: { delay: 0.5, duration: 1.5 },
     y:0
   },
   exit: {

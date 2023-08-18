@@ -4,35 +4,36 @@ import {getDocs, collection, query, orderBy, where} from 'firebase/firestore';
 import { db } from '../../data/firebase-config';
 import { useEffect } from 'react';
 import moment from 'moment';
-const LikesDataTable = () => {
-    const {  postList, setPostList } = useStateContext();
-  useEffect(() => {
+const CommentsDataTable = () => {
+    const { postList, setPostList } = useStateContext();
+     useEffect(() => {
     
-    getLikes()
+    getComments()
   }, []);
-  const likesCollection = collection(db, "likes");
-   const getLikes = async () => {
-    const q = query(likesCollection,orderBy("createdAt", "desc"));
+  const commentCollection = collection(db, "comments");
+   const getComments = async () => {
+    const q = query(commentCollection,orderBy("createdAt", "desc"));
     const data = await getDocs(q);
     const docs = data?.docs.map((doc,index) => ({
       ...doc.data(),
       id: index,
     }));
-    setPostList(docs);    
+    setPostList(docs);
+    
   };
   const deletePost = async (id) => {
-const q = query(collection(db, "likes"), where("id", "==", id));
+const q = query(collection(db, "comments"), where("body", "==", id));
 const snapshot = await getDocs(q)
 const result = snapshot.docs.map((doc) => ({...doc.data(), id: doc.id,}))
 result.forEach(async (result) => {
-  const docRef = doc(db, "likes", result.id)
+  const docRef = doc(db, "comments", result.id)
   await deleteDoc(docRef).then(() => {
     console.log("deleted")
   })
 })
     }
   function DataTable() {
- const columns = [
+    const columns = [
   {  field: 'id', headerName: 'ID', width: 70,  headerClassName: 'font-bold dark:text-gray-400 text-md w-[50%]',
     headerAlign: 'left', renderCell: (params) => <div className="w-full  dark:text-gray-200 text-md"> {params.value}</div>,},
      {field: 'image',
@@ -44,9 +45,9 @@ result.forEach(async (result) => {
   },
   { field: 'displayName', headerName: 'NAME', width: 150, headerClassName: 'font-bold dark:text-gray-400 text-md',
     headerAlign: 'left', renderCell: (params) => <div className="w-full  dark:text-gray-200 text-md "> {params.value}</div>, },
-  { field: 'like', headerName: 'LIKE', width: 100, headerClassName: 'font-bold dark:text-gray-400 text-md',
+    { field: 'blogTitle', headerName: 'POST', width: 300, headerClassName: 'font-bold dark:text-gray-400 text-md',
     headerAlign: 'left', renderCell: (params) => <div className="w-full  dark:text-gray-200 text-md "> {params.value}</div>,  },
-  { field: 'blogTitle', headerName: 'POST', width: 300, headerClassName: 'font-bold dark:text-gray-400 text-md',
+  { field: 'comment', headerName: 'COMMENT', width: 300, headerClassName: 'font-bold dark:text-gray-400 text-md',
     headerAlign: 'left', renderCell: (params) => <div className="w-full  dark:text-gray-200 text-md "> {params.value}</div>,  },
   
   {
@@ -62,7 +63,7 @@ result.forEach(async (result) => {
     field: 'date',
     headerName: 'DATE',
     type: 'number',
-    width: 150,
+    width: 250,
      headerClassName: 'font-bold dark:text-gray-400 text-md',
     headerAlign: 'left',
     renderCell: (params) => <div className="w-full  dark:text-gray-200"> {params.value}</div>,
@@ -85,10 +86,10 @@ const launchOptimistic = postList.map(function(elem) {
     id: elem.id,
     blogTitle: elem.name,
     displayName: elem.displayName,
-    like: elem.like,
+    comment: elem.body,
     time: moment(elem.createdAt.toDate()).format('LT'),
     date: moment(elem.createdAt.toDate()).calendar(),
-    action: elem.name
+    action: elem.body
   } 
 });
   return (
@@ -103,7 +104,7 @@ const launchOptimistic = postList.map(function(elem) {
   );
 }
   return (
-    <div><DataTable/></div>
+    <div>{ postList &&  <DataTable/>}</div>
   )
-}
-export default LikesDataTable
+};
+export default CommentsDataTable;

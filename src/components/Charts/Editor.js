@@ -143,4 +143,4 @@ return (
 </>
 )
 }
-export default EditorComponent
+export default EditorComponent;

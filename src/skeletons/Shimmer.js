@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 
 const Shimmer = () => {
   return (
     <div className="shimmer-wrapper">
-      <div className="shimmer"></div>
+      <div className="shimmer"/>
     </div>
-  )
-}
+  );
+};
 
 export default Shimmer;

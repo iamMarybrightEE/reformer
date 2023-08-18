@@ -582,4 +582,4 @@ return (
 
 )
 }
-export default Editpost
+export default Editpost;

@@ -4,57 +4,51 @@ import {getDocs, collection, query, orderBy, where} from 'firebase/firestore';
 import { db } from '../../data/firebase-config';
 import { useEffect } from 'react';
 import moment from 'moment';
-const CommentsDataTable = () => {
+const UsersDataTable = () => {
     const { postList, setPostList } = useStateContext();
-     useEffect(() => {
-    
-    getComments()
+      useEffect(() => {
+    getUsers()
   }, []);
-  const commentCollection = collection(db, "comments");
-   const getComments = async () => {
-    const q = query(commentCollection,orderBy("createdAt", "desc"));
+  const usersCollection = collection(db, "users");
+   const getUsers = async () => {
+   const q = query(usersCollection,orderBy("createdAt", "desc"));
     const data = await getDocs(q);
     const docs = data?.docs.map((doc,index) => ({
       ...doc.data(),
       id: index,
     }));
-    setPostList(docs);
-    
+    setPostList(docs);    
   };
   const deletePost = async (id) => {
-const q = query(collection(db, "comments"), where("body", "==", id));
+const q = query(collection(db, "users"), where("body", "==", id));
 const snapshot = await getDocs(q)
 const result = snapshot.docs.map((doc) => ({...doc.data(), id: doc.id,}))
 result.forEach(async (result) => {
-  const docRef = doc(db, "comments", result.id)
+  const docRef = doc(db, "users", result.id)
   await deleteDoc(docRef).then(() => {
     console.log("deleted")
   })
 })
     }
   function DataTable() {
-    const columns = [
-  {  field: 'id', headerName: 'ID', width: 70,  headerClassName: 'font-bold dark:text-gray-400 text-md w-[50%]',
+  const columns = [
+  { field: 'id', headerName: 'ID', width: 70,  headerClassName: 'font-bold dark:text-gray-400 text-md w-[50%]',
     headerAlign: 'left', renderCell: (params) => <div className="w-full  dark:text-gray-200 text-md"> {params.value}</div>,},
-     {field: 'image',
+    {field: 'image',
     headerName: 'IMAGE',
     width: 70,
     headerClassName: 'font-bold dark:text-gray-400 text-md',
     headerAlign: 'left',
     renderCell: (params) => <img className='w-[50px] h-[50px] rounded-[50%]' src={params.value} />, // renderCell will render the component
   },
-  { field: 'displayName', headerName: 'NAME', width: 150, headerClassName: 'font-bold dark:text-gray-400 text-md',
+  { field: 'displayName', headerName: 'NAME', width: 200, headerClassName: 'font-bold dark:text-gray-400 text-md',
     headerAlign: 'left', renderCell: (params) => <div className="w-full  dark:text-gray-200 text-md "> {params.value}</div>, },
-    { field: 'blogTitle', headerName: 'POST', width: 300, headerClassName: 'font-bold dark:text-gray-400 text-md',
-    headerAlign: 'left', renderCell: (params) => <div className="w-full  dark:text-gray-200 text-md "> {params.value}</div>,  },
-  { field: 'comment', headerName: 'COMMENT', width: 300, headerClassName: 'font-bold dark:text-gray-400 text-md',
-    headerAlign: 'left', renderCell: (params) => <div className="w-full  dark:text-gray-200 text-md "> {params.value}</div>,  },
   
   {
     field: 'time',
     headerName: 'TIME',
     type: 'number',
-    width: 150,
+    width: 450,
      headerClassName: 'font-bold dark:text-gray-400 text-md',
     headerAlign: 'left',
     renderCell: (params) => <div className="w-full  dark:text-gray-200"> {params.value}</div>, 
@@ -68,7 +62,7 @@ result.forEach(async (result) => {
     headerAlign: 'left',
     renderCell: (params) => <div className="w-full  dark:text-gray-200"> {params.value}</div>,
   },
-   {
+  {
     field: 'action',
     headerName: 'ACTION',
     sortable: false,
@@ -84,16 +78,14 @@ const launchOptimistic = postList.map(function(elem) {
   return {
     image: elem.profilePicture,
     id: elem.id,
-    blogTitle: elem.name,
     displayName: elem.displayName,
-    comment: elem.body,
     time: moment(elem.createdAt.toDate()).format('LT'),
     date: moment(elem.createdAt.toDate()).calendar(),
-    action: elem.body
+    action: elem.displayName
   } 
 });
   return (
-    <div style={{ height: 400, width: '100%' }} className="bg-white  dark:text-gray-200 dark:bg-secondary-dark-bg  p-4 pt-9 rounded-2xl shadow-lg transition-all ">
+    <div style={{ height: 600, width: '100%' }} className="bg-white  dark:text-gray-200 dark:bg-secondary-dark-bg  p-4 pt-9 rounded-2xl shadow-lg transition-all ">
       {postList && <DataGrid
         rows={launchOptimistic}
         columns={columns}
@@ -104,7 +96,7 @@ const launchOptimistic = postList.map(function(elem) {
   );
 }
   return (
-    <div>{ postList &&  <DataTable/>}</div>
+    <div><DataTable/></div>
   )
 }
-export default CommentsDataTable
+export default UsersDataTable;

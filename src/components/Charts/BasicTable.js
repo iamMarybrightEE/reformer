@@ -56,4 +56,4 @@ const trendingPostCollection = collection(db, "trending");
       </Table>
     </TableContainer>
   );
-}
+};

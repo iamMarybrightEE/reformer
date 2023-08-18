@@ -27,7 +27,7 @@ const containerVariants = {
   },
   visible: { 
     opacity: 1, 
-    transition: { delay: 1.5, duration: 1.5 },
+    transition: { delay: 0.5, duration: 1.5 },
     x:0
   },
   hide: { 
@@ -36,7 +36,7 @@ const containerVariants = {
   },
   show: { 
     opacity: 1, 
-    transition: { delay: 1.5, duration: 1.5 },
+    transition: { delay: 0.5, duration: 1.5 },
     x:0
   },
   down: { 
@@ -45,7 +45,7 @@ const containerVariants = {
   },
   up: { 
     opacity: 1, 
-    transition: { delay: 1.5, duration: 1.5 },
+    transition: { delay: 0.5, duration: 1.5 },
     y:0
   },
   exit: {
@@ -53,50 +53,50 @@ const containerVariants = {
     transition: { ease: 'easeInOut' }
   }
 };
-const Politics = () => {
- const {   politics, setPolitics,  } = useStateContext();
+const Music = () => {
+ const { music, setMusic} = useStateContext();
    useEffect(() => {
-        getPoliticsPost()
+        getMusicPost()
   }, []);
-   const politicsPostCollection = collection(db, "politics");
-   const getPoliticsPost = async () => {
-   const q = query(politicsPostCollection,orderBy("createdAt", "desc"));
+   const musicsPostCollection = collection(db, "music");
+   const getMusicPost = async () => {
+    const q = query(musicsPostCollection,orderBy("createdAt", "desc"));
     const data = await getDocs(q);
     const docs = data?.docs.map((doc,index) => ({
       ...doc.data(),
       id: index,
     }));
-    setPolitics(docs);
-  };
+    setMusic(docs);
+  };  
   return (
     <div className="mt-8  w-full p-4">
-      {!(politics) && [1,2,3,4,5].map((n) => <SkeletonArticle key={n} theme="light" />)}
-               {politics && <>
-       <motion.div variants={containerVariants}
+      {!(music) && [1,2,3,4,5].map((n) => <SkeletonArticle key={n} theme="light" />)}
+               {music && <>
+        <motion.div variants={containerVariants}
           initial="hidden"
           animate="visible"
           exit="exit"   className="pb-8 w-full  overflow-hidden text-justify   transition-all relative ">
             <div className="mt-4 relative ">
-              {politics[0].file && <img src={politics[0].file} alt="" className=" rounded-2xl w-full mb-8 h-[250px] border-0 filter brightness-50"/>}
-                <div className={politics[0].file == null ? "hidden " : ' absolute top-5 left-5 mb-2 p-2 py-1 font-bold bg-[#cdcd32]  text-white w-[max-content] rounded-md '}>  politics</div>
+              {music[0].file && <img src={music[0].file} alt="" className=" rounded-2xl w-full mb-8 h-[250px] border-0 filter brightness-50"/>}
+                <div className={music[0].file == null ? "hidden " : ' absolute top-5 left-5 mb-2 p-2 py-1 font-bold bg-[#4432cd]  text-white w-[max-content] rounded-md '}>  music</div>
             </div>
             <div className="text-justify">
-                <Link to={politics[0].title.toString()} className="text-2xl md:text-4xl leading-none font-bold text-black  dark:text-white hover:cursor-pointer title mt-4">{politics[0].title}</Link>
+                <Link to={music[0].title.toString()} className="text-2xl md:text-4xl leading-none font-bold text-black  dark:text-white hover:cursor-pointer title mt-4">{music[0].title}</Link>
                 <div className="mt-4 text-md flex gap-2 items-center text-gray-500 dark:text-gray-400">
-                 <AccessTimeIcon/> <span>{moment(politics[0].createdAt.toDate()).calendar()}</span>
+                 <AccessTimeIcon/> <span>{moment(music[0].createdAt.toDate()).calendar()}</span>
                 </div>
-                <div className="w-full h-[112px]  truncate whitespace-normal body pt-4 pb-8 leading-6 text-gray-800 dark:text-gray-200" dangerouslySetInnerHTML={{ __html: politics[0].description }}  />
-                <div className="w-full mt-8"><Link to={politics[0].title.toString()} className="text-white bg-black dark:text-[#32cd32]  dark:bg-[rgb(50,205,50,0.1)] rounded-md dark:hover:text-[#35d535] hover:bg-[#cdcd32] text-center w-full font-bold p-4 ">Read more</Link></div>
+                <div className="w-full h-[112px]  truncate whitespace-normal body pt-4 pb-8 leading-6 text-gray-800 dark:text-gray-200" dangerouslySetInnerHTML={{ __html: music[0].description }}  />
+                <div className="w-full mt-8"><Link to={music[0].title.toString()} className="text-white bg-black dark:text-[#32cd32]  dark:bg-[rgb(50,205,50,0.1)] rounded-md dark:hover:text-[#35d535] hover:bg-[#4432cd] text-center w-full font-bold p-4 ">Read more</Link></div>
                 <div/>
             </div>
         </motion.div>
         </>}
-               {politics && <div className=" mt-16 pb-4 w-full  dark:text-gray-200  ">
+               {music && <div className=" mt-16 pb-4 w-full  dark:text-gray-200  ">
         <motion.div variants={containerVariants}
           initial="down"
           animate="up"
           exit="exit" className='flex font-bold border-b-2 text-md mb-8 uppercase pb-2 border-black dark:text-white dark:border-white '> Also Read</motion.div>
-      {politics.filter((item,i) => (i !== 0 )).map((item) => (
+      {music.filter((item,i) => (i !== 0 )).map((item) => (
                   <>
                   <Link  to={item.title.toString()} key={item.id} className="text-justify dark:text-white overflow-hidden w-full m-4 ">
                     <motion.div variants={containerVariants}
@@ -105,7 +105,7 @@ const Politics = () => {
           exit="exit" className="sm:flex gap-4 ">
                       <div className=" relative">
                         {item.file && <img src={item.file} alt="" className='w-full rounded-2xl  sm:w-[200px] h-[230px] shadow-sm' />}
-                        <div className={item.file == null ? "hidden " : ' absolute top-5 left-5 mb-2 p-2 py-1 font-bold bg-[#cdcd32]  text-white w-[max-content] rounded-md'}>  politics</div>
+                        <div className={item.file == null ? "hidden " : ' absolute top-5 left-5 mb-2 p-2 py-1 font-bold bg-[#4432cd]  text-white w-[max-content] rounded-md'}>  music</div>
                       </div>
                       <div className={item.file == null ? "ml-[-4]":"w-full sm:w-[70%] "}>
                          <Link to={item.title.toString()} className="text-2xl  leading-none font-bold text-black  dark:text-white hover:cursor-pointer title mt-4">{item.title}</Link>
@@ -113,7 +113,7 @@ const Politics = () => {
                  <AccessTimeIcon/> <span>{moment(item.createdAt.toDate()).calendar()}</span>
                 </div>
                 <div className="w-full h-[60px]  truncate whitespace-normal body pt-4 pb-8 leading-6 text-gray-800 dark:text-gray-200" dangerouslySetInnerHTML={{ __html: item.description }}  />
-                                         <div className="w-full my-8"><Link to={item.title.toString()} className="text-white bg-black dark:text-[#32cd32]  dark:bg-[rgb(50,205,50,0.1)] rounded-md dark:hover:text-[#35d535] hover:bg-[#cdcd32] text-center w-full font-bold p-4 mb-16">Read more</Link></div>
+                                         <div className="w-full my-8"><Link to={item.title.toString()} className="text-white bg-black dark:text-[#32cd32]  dark:bg-[rgb(50,205,50,0.1)] rounded-md dark:hover:text-[#35d535] hover:bg-[#4432cd] text-center w-full font-bold p-4 mb-16">Read more</Link></div>
                         
                       </div>
                     </motion.div>
@@ -123,4 +123,4 @@ const Politics = () => {
               </div>
   )
 }
-export default Politics
+export default Music

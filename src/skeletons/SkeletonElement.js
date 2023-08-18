@@ -6,7 +6,7 @@ function SkeletonElement({ type }) {
 
   return (
     <div className={classes}></div>
-  )
+  );
 }
 
-export default SkeletonElement
+export default SkeletonElement;

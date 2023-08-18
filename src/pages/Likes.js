@@ -1,6 +1,6 @@
 import { useStateContext } from '../contexts/ContextProvider';
-import { Navbar, Footer, Sidebar,  Header } from '../components';
-import UsersDataTable from '../components/Charts/UsersDataTable';
+import { Navbar, Footer, Sidebar,Header } from '../components';
+import LikesDataTable from '../components/Charts/LikesDataTable';
 import { motion } from 'framer-motion';
 
 const buttonVariants = {
@@ -22,7 +22,7 @@ const containerVariants = {
   },
   visible: { 
     opacity: 1, 
-    transition: { delay: 1.5, duration: 1.5 },
+    transition: { delay: 0.5, duration: 1.5 },
     x:0
   },
   hide: { 
@@ -31,7 +31,7 @@ const containerVariants = {
   },
   show: { 
     opacity: 1, 
-    transition: { delay: 1.5, duration: 1.5 },
+    transition: { delay: 0.5, duration: 1.5 },
     x:0
   },
   down: { 
@@ -40,7 +40,7 @@ const containerVariants = {
   },
   up: { 
     opacity: 1, 
-    transition: { delay: 1.5, duration: 1.5 },
+    transition: { delay: 0.5, duration: 1.5 },
     y:0
   },
   high: { 
@@ -49,7 +49,7 @@ const containerVariants = {
   },
   low: { 
     opacity: 1, 
-    transition: { delay: 1.5, duration: 1.5 },
+    transition: { delay: 0.5, duration: 1.5 },
     y:0
   },
   exit: {
@@ -57,9 +57,9 @@ const containerVariants = {
     transition: { ease: 'easeInOut' }
   }
 };
-const Users = () => {
+const Likes = () => {
   const {  currentMode, activeMenu } = useStateContext();
- 
+  
   return (
     <div className="">
       <div className={currentMode === 'Dark' ? 'dark' : ''}>      
@@ -83,17 +83,24 @@ const Users = () => {
             <div className="fixed md:static bg-main-bg dark:bg-main-dark-bg navbar w-full ">
               <Navbar />
             </div>
-            <div className='p-8 pb-0 dark:text-gray-200'>
-              <Header title='Users' className="dark:text-gray-200"/>
-            </div>
-            <div className='w-full p-8'>
-              <UsersDataTable/>
-            </div>
+             <motion.div variants={containerVariants}
+          initial="hide"
+          animate="show"
+          exit="exit" className='p-8 pb-0 dark:text-gray-200'>
+              <Header title='Likes' className="dark:text-gray-200"/>
+            </motion.div>
+             <motion.div variants={containerVariants}
+          initial="down"
+          animate="up"
+          exit="exit" className='w-full p-8'>
+             <LikesDataTable/>
+            </motion.div>
             <Footer />
           </div>
         </div>
-    </div> 
+    </div>
     </div>
   );
 }
-export default Users
+
+export default Likes

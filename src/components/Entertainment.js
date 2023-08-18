@@ -6,7 +6,6 @@ import { Link} from 'react-router-dom';
 import SkeletonArticle from '../skeletons/SkeletonArticle';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import moment from 'moment';
-
 import { motion } from 'framer-motion';
 
 const buttonVariants = {
@@ -28,7 +27,7 @@ const containerVariants = {
   },
   visible: { 
     opacity: 1, 
-    transition: { delay: 1.5, duration: 1.5 },
+    transition: { delay: 0.5, duration: 1.5 },
     x:0
   },
   hide: { 
@@ -37,7 +36,7 @@ const containerVariants = {
   },
   show: { 
     opacity: 1, 
-    transition: { delay: 1.5, duration: 1.5 },
+    transition: { delay: 0.5, duration: 1.5 },
     x:0
   },
   down: { 
@@ -46,7 +45,7 @@ const containerVariants = {
   },
   up: { 
     opacity: 1, 
-    transition: { delay: 1.5, duration: 1.5 },
+    transition: { delay: 0.5, duration: 1.5 },
     y:0
   },
   exit: {
@@ -54,51 +53,50 @@ const containerVariants = {
     transition: { ease: 'easeInOut' }
   }
 };
-const Trending = () => {
-  const { trends, setTrends } = useStateContext();
+const Entertainment = () => {
+ const {entertainment, setEntertainment } = useStateContext();
    useEffect(() => {
-    getTrendingPost()    
+        getEntertainmentPost()
   }, []);
-const trendingPostCollection = collection(db, "trending");
-   const getTrendingPost = async () => {
-    const q = query(trendingPostCollection,orderBy("createdAt", "desc"));
+   const entertainmentPostCollection = collection(db, "entertainment");
+   const getEntertainmentPost = async () => {
+   const q = query(entertainmentPostCollection,orderBy("createdAt", "desc"));
     const data = await getDocs(q);
     const docs = data?.docs.map((doc,index) => ({
       ...doc.data(),
       id: index,
     }));
-    setTrends(docs);    
+    setEntertainment(docs);
   };
-   return (
-    <>
+  return (
     <div className="mt-8  w-full p-4">
-      {!(trends) && [1,2,3,4,5].map((n) => <SkeletonArticle key={n} theme="light" />)}
-               {trends && <>
+      {!(entertainment) && [1,2,3,4,5].map((n) => <SkeletonArticle key={n} theme="light" />)}
+               {entertainment && <>
         <motion.div variants={containerVariants}
           initial="hidden"
           animate="visible"
-          exit="exit"  className="pb-8 w-full  overflow-hidden text-justify   transition-all relative ">
+          exit="exit"   className="pb-8 w-full  overflow-hidden text-justify   transition-all relative ">
             <div className="mt-4 relative ">
-              {trends[0].file && <img src={trends[0].file} alt="" className=" rounded-2xl w-full mb-8 h-[250px] border-0 filter brightness-50"/>}
-                <div className={trends[0].file == null ? "hidden " : ' absolute top-5 left-5 mb-2 p-2 py-1 font-bold bg-[#cd323f]  text-white w-[max-content] rounded-md '}>  trending</div>
+              {entertainment[0].file && <img src={entertainment[0].file} alt="" className=" rounded-2xl w-full mb-8 h-[250px] border-0 filter brightness-50"/>}
+                <div className={entertainment[0].file == null ? "hidden " : ' absolute top-5 left-5 mb-2 p-2 py-1 font-bold bg-[#cd323f]  text-white w-[max-content] rounded-md '}>  entertainment</div>
             </div>
             <div className="text-justify">
-                <Link to={trends[0].title.toString()} className="text-2xl md:text-4xl leading-none font-bold text-black  dark:text-white hover:cursor-pointer title mt-4">{trends[0].title}</Link>
+                <Link to={entertainment[0].title.toString()} className="text-2xl md:text-4xl leading-none font-bold text-black  dark:text-white hover:cursor-pointer title mt-4">{entertainment[0].title}</Link>
                 <div className="mt-4 text-md flex gap-2 items-center text-gray-500 dark:text-gray-400">
-                 <AccessTimeIcon/> <span>{moment(trends[0].createdAt.toDate()).calendar()}</span>
+                 <AccessTimeIcon/> <span>{moment(entertainment[0].createdAt.toDate()).calendar()}</span>
                 </div>
-                <div className="w-full h-[112px]  truncate whitespace-normal body pt-4 pb-8 leading-6 text-gray-800 dark:text-gray-200" dangerouslySetInnerHTML={{ __html: trends[0].description }}  />
-                <div className="w-full mt-8"><Link to={trends[0].title.toString()} className="text-white bg-black dark:text-[#32cd32]  dark:bg-[rgb(50,205,50,0.1)] rounded-md dark:hover:text-[#35d535] hover:bg-[#cd323f] text-center w-full font-bold p-4 ">Read more</Link></div>
+                <div className="w-full h-[112px]  truncate whitespace-normal body pt-4 pb-8 leading-6 text-gray-800 dark:text-gray-200" dangerouslySetInnerHTML={{ __html: entertainment[0].description }}  />
+                <div className="w-full mt-8"><Link to={entertainment[0].title.toString()} className="text-white bg-black dark:text-[#32cd32]  dark:bg-[rgb(50,205,50,0.1)] rounded-md dark:hover:text-[#35d535] hover:bg-[#cd323f] text-center w-full font-bold p-4 ">Read more</Link></div>
                 <div/>
             </div>
         </motion.div>
         </>}
-               {trends && <div className=" mt-16 pb-4 w-full  dark:text-gray-200  ">
+               {entertainment && <div className=" mt-16 pb-4 w-full  dark:text-gray-200  ">
         <motion.div variants={containerVariants}
           initial="down"
           animate="up"
           exit="exit" className='flex font-bold border-b-2 text-md mb-8 uppercase pb-2 border-black dark:text-white dark:border-white '> Also Read</motion.div>
-      {trends.filter((item,i) => (i !== 0 )).map((item) => (
+      {entertainment.filter((item,i) => (i !== 0 )).map((item) => (
                   <>
                   <Link  to={item.title.toString()} key={item.id} className="text-justify dark:text-white overflow-hidden w-full m-4 ">
                     <motion.div variants={containerVariants}
@@ -107,7 +105,7 @@ const trendingPostCollection = collection(db, "trending");
           exit="exit" className="sm:flex gap-4 ">
                       <div className=" relative">
                         {item.file && <img src={item.file} alt="" className='w-full rounded-2xl  sm:w-[200px] h-[230px] shadow-sm' />}
-                        <div className={item.file == null ? "hidden " : ' absolute top-5 left-5 mb-2 p-2 py-1 font-bold bg-[#cd323f]  text-white w-[max-content] rounded-md'}>  trending</div>
+                        <div className={item.file == null ? "hidden " : ' absolute top-5 left-5 mb-2 p-2 py-1 font-bold bg-[#cd323f]  text-white w-[max-content] rounded-md'}>  entertainment</div>
                       </div>
                       <div className={item.file == null ? "ml-[-4]":"w-full sm:w-[70%] "}>
                          <Link to={item.title.toString()} className="text-2xl  leading-none font-bold text-black  dark:text-white hover:cursor-pointer title mt-4">{item.title}</Link>
@@ -123,7 +121,6 @@ const trendingPostCollection = collection(db, "trending");
                   </>
                 ))}</div>}
               </div>
-      </>
   )
 }
-export default Trending
+export default Entertainment

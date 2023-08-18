@@ -4,51 +4,52 @@ import {getDocs, collection, query, orderBy, where} from 'firebase/firestore';
 import { db } from '../../data/firebase-config';
 import { useEffect } from 'react';
 import moment from 'moment';
-const UsersDataTable = () => {
-    const { postList, setPostList } = useStateContext();
-      useEffect(() => {
-    getUsers()
+import {Link} from 'react-router-dom';
+export default function DataTable() {
+  const { postList, setPostList } = useStateContext();
+useEffect(() => {
+    getTrendingPost()
   }, []);
-  const usersCollection = collection(db, "users");
-   const getUsers = async () => {
-   const q = query(usersCollection,orderBy("createdAt", "desc"));
-    const data = await getDocs(q);
-    const docs = data?.docs.map((doc,index) => ({
-      ...doc.data(),
-      id: index,
-    }));
-    setPostList(docs);    
-  };
-  const deletePost = async (id) => {
-const q = query(collection(db, "users"), where("body", "==", id));
+const deleteTrendingPost = async (id) => {
+const q = query(collection(db, "trending"), where("title", "==", id));
 const snapshot = await getDocs(q)
 const result = snapshot.docs.map((doc) => ({...doc.data(), id: doc.id,}))
 result.forEach(async (result) => {
-  const docRef = doc(db, "users", result.id)
+  const docRef = doc(db, "trending", result.id)
   await deleteDoc(docRef).then(() => {
     console.log("deleted")
   })
 })
     }
-  function DataTable() {
-  const columns = [
+const trendingPostCollection = collection(db, "trending");
+ const getTrendingPost = async () => {
+    const q = query(trendingPostCollection,orderBy("createdAt", "desc"));
+    const data = await getDocs(q);
+    const docs = data?.docs.map((doc,index) => ({
+      ...doc.data(),
+      id: index,
+    }));
+    setPostList(docs);
+    
+  };
+   const columns = [
   { field: 'id', headerName: 'ID', width: 70,  headerClassName: 'font-bold dark:text-gray-400 text-md w-[50%]',
-    headerAlign: 'left', renderCell: (params) => <div className="w-full  dark:text-gray-200 text-md"> {params.value}</div>,},
-    {field: 'image',
+    headerAlign: 'left', renderCell: (params) => <div className="w-full  dark:text-gray-200 text-md"> {params.value}</div>, },
+     {
+    field: 'image',
     headerName: 'IMAGE',
     width: 70,
     headerClassName: 'font-bold dark:text-gray-400 text-md',
     headerAlign: 'left',
     renderCell: (params) => <img className='w-[50px] h-[50px] rounded-[50%]' src={params.value} />, // renderCell will render the component
   },
-  { field: 'displayName', headerName: 'NAME', width: 200, headerClassName: 'font-bold dark:text-gray-400 text-md',
-    headerAlign: 'left', renderCell: (params) => <div className="w-full  dark:text-gray-200 text-md "> {params.value}</div>, },
-  
+  { field: 'title', headerName: 'TITLE', width: 600, headerClassName: 'font-bold dark:text-gray-400 text-md',
+    headerAlign: 'left', renderCell: (params) => <div className="w-full  dark:text-gray-200 text-md "> {params.value}</div>,  },
   {
     field: 'time',
     headerName: 'TIME',
     type: 'number',
-    width: 450,
+    width: 150,
      headerClassName: 'font-bold dark:text-gray-400 text-md',
     headerAlign: 'left',
     renderCell: (params) => <div className="w-full  dark:text-gray-200"> {params.value}</div>, 
@@ -57,35 +58,38 @@ result.forEach(async (result) => {
     field: 'date',
     headerName: 'DATE',
     type: 'number',
-    width: 250,
+    width: 150,
      headerClassName: 'font-bold dark:text-gray-400 text-md',
     headerAlign: 'left',
-    renderCell: (params) => <div className="w-full  dark:text-gray-200"> {params.value}</div>,
+    renderCell: (params) => <div className="w-full  dark:text-gray-200"> {params.value}</div>, 
   },
   {
     field: 'action',
     headerName: 'ACTION',
     sortable: false,
-    width: 70,
+    width: 150,
      headerClassName: 'font-bold dark:text-gray-400 text-md',
     headerAlign: 'left',
     renderCell: (params) => (
-      <button className="bg-[#d61a1a] text-white p-2 font-bold my-4  rounded-md" onClick={() => {deletePost(params.value)}}> Delete</button>
+      <>
+      <Link to={`/edit/${params.value}`} className="bg-[#32cd32] text-white p-2 font-bold m-4  rounded-md"> Edit </Link>
+      <button className="bg-[#d61a1a] text-white p-2 font-bold my-4  rounded-md" onClick={() => {deleteTrendingPost(params.value)}}> Delete</button>
+      </>
     ),
   },
 ];
-const launchOptimistic = postList.map(function(elem) {
+const launchOptimistic =postList && postList.map(function(elem) {
   return {
-    image: elem.profilePicture,
+    image: elem.file,
     id: elem.id,
-    displayName: elem.displayName,
+    title: elem.title,
     time: moment(elem.createdAt.toDate()).format('LT'),
     date: moment(elem.createdAt.toDate()).calendar(),
-    action: elem.displayName
+    action: elem.title
   } 
 });
   return (
-    <div style={{ height: 600, width: '100%' }} className="bg-white  dark:text-gray-200 dark:bg-secondary-dark-bg  p-4 pt-9 rounded-2xl shadow-lg transition-all ">
+    <div style={{ height: 400, width: '100%' }} className="bg-white  dark:text-gray-200 dark:bg-secondary-dark-bg  p-4 pt-9 rounded-2xl shadow-lg transition-all ">
       {postList && <DataGrid
         rows={launchOptimistic}
         columns={columns}
@@ -94,9 +98,4 @@ const launchOptimistic = postList.map(function(elem) {
       />}
     </div>
   );
-}
-  return (
-    <div><DataTable/></div>
-  )
-}
-export default UsersDataTable 
+};
